@@ -1,10 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import JobCard from "./components/JobCard";
 import ShimmerCard from "./components/Shimmer";
 import { useFetchJobs } from "./custom-hooks/useFetchJobs";
+import { Job } from "./types";
+import DropdownSelect from "./components/Dropdown";
 
 function App() {
   const { isLoading, jobs, error, fetchJobs } = useFetchJobs();
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs);
+  useEffect(() => setFilteredJobs(jobs), [jobs]);
   const handleScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop !==
@@ -22,9 +26,12 @@ function App() {
   }, [isLoading]);
   return (
     <div className="font-sans text-gray-700 m-6 mt-10">
+      <div className="filters">
+        <DropdownSelect options={["hello", "world", "test"]} />
+      </div>
       <div className="cards-container mt-8 flex gap-10 flex-wrap justify-center align-middle">
-        {jobs.map((job, index) => (
-          <JobCard job={job} key={job.jdUid+index}/>
+        {filteredJobs.map((job, index) => (
+          <JobCard job={job} key={job.jdUid + index} />
         ))}
       </div>
       {isLoading && (

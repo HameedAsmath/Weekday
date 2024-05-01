@@ -15,7 +15,7 @@ const JobCard = ({ job }: { job: Job }) => {
       <div className="company-card flex gap-4 justify-center lg:justify-start items-center">
         <div className="company-logo">
           <img
-            src={job?.companyLogo || "../../public/weekday.svg"}
+            src={job?.companyLogo || "/weekday.svg"}
             alt="company-logo"
             width="50"
             className="rounded-md"
