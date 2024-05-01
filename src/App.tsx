@@ -21,10 +21,10 @@ function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLoading]);
   return (
-    <div className="font-sans text-gray-800 m-6 mt-10">
+    <div className="font-sans text-gray-700 m-6 mt-10">
       <div className="cards-container mt-8 flex gap-10 flex-wrap justify-center align-middle">
-        {jobs.map((job) => (
-          <JobCard job={job} />
+        {jobs.map((job, index) => (
+          <JobCard job={job} key={job.jdUid+index}/>
         ))}
       </div>
       {isLoading && (
