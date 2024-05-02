@@ -12,6 +12,7 @@ import {
   rolesOptions,
 } from "./helpers/constants";
 import { filterJobs } from "./helpers/filterJobs";
+import useThrottle from "./custom-hooks/useThrottle";
 
 function App() {
   const { isLoading, jobs, error, fetchJobs } = useFetchJobs();
@@ -21,8 +22,31 @@ function App() {
   const [selectedBasePay, setSelectedBasePay] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs);
-
+  const [isNoJobsFound, setIsNoJobsFound] = useState(false);
+  const handleClearFilter = () => {
+    setFilteredJobs(jobs);
+    setSearchTerm("");
+    setSelectedBasePay([]);
+    setSelectedExperience([]);
+    setSelectedModeOfWork([]);
+    setSelectedRoles([]);
+  };
   useEffect(() => {
+    const filtered = filterJobs(
+      jobs,
+      selectedRoles,
+      selectedExperience,
+      selectedModeOfWork,
+      selectedBasePay,
+      searchTerm
+    );
+    if (filtered.length === 0 && !isLoading) {
+      setIsNoJobsFound(true);
+      return;
+    } else {
+      setFilteredJobs(filtered);
+      setIsNoJobsFound(false);
+    }
     setFilteredJobs(
       filterJobs(
         jobs,
@@ -41,7 +65,6 @@ function App() {
     selectedBasePay,
     searchTerm,
   ]);
-
   const handleScroll = () => {
     const isAtBottom =
       window.innerHeight + document.documentElement.scrollTop + 100 >=
@@ -51,11 +74,12 @@ function App() {
       fetchJobs(jobs.length);
     }
   };
+  const throttledHandleScroll = useThrottle(handleScroll, 200);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isLoading]);
+    window.addEventListener("scroll", throttledHandleScroll);
+    return () => window.removeEventListener("scroll", throttledHandleScroll);
+  }, [isLoading, throttledHandleScroll]);
 
   return (
     <div className="font-sans text-gray-700 m-6 mt-10">
@@ -109,16 +133,21 @@ function App() {
         <div className="filter">
           <p
             className="cursor-pointer text-secondary hover:opacity-80"
-            onClick={() => setFilteredJobs(jobs)}
+            onClick={() => handleClearFilter()}
           >
             clear filters
           </p>
         </div>
       </div>
-      {filteredJobs.length === 0 && !isLoading && (
-        <h3 className="text-center mt-[20%] font-mono text-gray-600 font-bold text-2xl">
-          Oops! No results found
-        </h3>
+      {((filteredJobs.length === 0 && !isLoading) || isNoJobsFound) && (
+        <>
+          <h3 className="text-center mt-[5%] font-mono text-gray-600 font-bold text-2xl">
+            Oops! No results found
+          </h3>
+          <p className="text-lg text-gray-600 mt-3 ml-10">
+            Try searching the below jobs instaed
+          </p>
+        </>
       )}
       <div className="cards-container mt-8 flex gap-10 flex-wrap justify-center align-middle">
         {filteredJobs.map((job, index) => (

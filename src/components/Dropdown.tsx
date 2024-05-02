@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import DropdownIcon from "../icons/DropdownIcon";
+import { useDebounce } from "../custom-hooks/useDebounce";
 
 const DropdownSelect = ({
   options,
@@ -13,6 +14,7 @@ const DropdownSelect = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropDownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const debouncedSearchTerm = useDebounce(searchTerm, 300); 
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -43,7 +45,7 @@ const DropdownSelect = ({
   };
 
   const filteredOptions = options.filter((option: string) =>
-    option.toLowerCase().includes(searchTerm.toLowerCase())
+    option.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
   );
 
   return (
