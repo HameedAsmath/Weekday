@@ -1,8 +1,8 @@
 # Weekday Frontend Assignment
 
-Welcome to my Weekday Frontend Assignment project! If you're interested, feel free to check out my portfolio at [portfolio](https://hameed-portfolio.netlify.app/){:target="_blank"}.
+Welcome to my Weekday Frontend Assignment project! If you're interested, feel free to check out my portfolio at [portfolio](https://hameed-portfolio.netlify.app/).
 
-To save your time I have deployed the project in netlify checkout from here directly [deployed Link](https://weekday-frontend.netlify.app/){:target="_blank"}.
+To save your time I have deployed the project in netlify checkout from here directly [deployed Link](https://weekday-frontend.netlify.app/).
 
 ## Overview
 This was completed with approximately 14 hours of continuous work and minimal sleep. It encompasses a frontend application with various features and optimizations aimed at delivering a stunning user experience. Below are the details of the project, including steps to run it, challenges faced, the tech stack used, and the features implemented.
