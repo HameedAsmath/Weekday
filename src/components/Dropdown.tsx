@@ -8,16 +8,11 @@ const DropdownSelect = ({
 }: {
   options: string[];
   placeholder: string;
-  onSelect: React.Dispatch<React.SetStateAction<string[]>>;
+  onSelect?: React.Dispatch<React.SetStateAction<string[]>>;
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  //   const [selectedOption, setSelectedOption] = useState("");
   const [isDropDownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-
-  //   useEffect(() => {
-  //     console.log(selectedOption);
-  //   }, [selectedOption]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -37,7 +32,7 @@ const DropdownSelect = ({
   }, []);
 
   const handleOptionSelect = (option: string) => {
-    onSelect([option.toLowerCase()]);
+    onSelect && onSelect([option.toLowerCase()]);
     setSearchTerm(option);
     setIsDropdownOpen(false);
   };
@@ -78,8 +73,14 @@ const DropdownSelect = ({
             filteredOptions.map((option: string) => (
               <div className="top-10" key={option}>
                 <p
-                  className="rounded-t bg-white hover:bg-blue-50 py-2 px-4 whitespace-no-wrap cursor-pointer w-full option"
-                  onClick={() => handleOptionSelect(option)}
+                  className={`rounded-t bg-white ${
+                    onSelect
+                      ? "hover:bg-blue-50"
+                      : "hover:bg-gray-50 cursor-not-allowed"
+                  } py-2 px-4 whitespace-no-wrap w-full option ${
+                    onSelect && "cursor-pointer"
+                  }`}
+                  onClick={() => onSelect && handleOptionSelect(option)}
                 >
                   {option}
                 </p>

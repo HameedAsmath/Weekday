@@ -34,3 +34,5 @@ export const basePayOptions = [
     "60L",
     "70L"
 ]
+
+export const NoInputData = ["Api data Not provided"]

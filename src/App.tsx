@@ -5,11 +5,13 @@ import { useFetchJobs } from "./custom-hooks/useFetchJobs";
 import { Job } from "./types";
 import DropdownSelect from "./components/Dropdown";
 import {
+  NoInputData,
   basePayOptions,
   experienceOptions,
   modeOfWorkOptions,
   rolesOptions,
 } from "./helpers/constants";
+import { filterJobs } from "./helpers/filterJobs";
 
 function App() {
   const { isLoading, jobs, error, fetchJobs } = useFetchJobs();
@@ -19,80 +21,27 @@ function App() {
   const [selectedBasePay, setSelectedBasePay] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs);
-  useEffect(() => setFilteredJobs(jobs), [jobs]);
-
-  const filterJobs = () => {
-    let filtered = [...jobs];
-
-    if (selectedRoles.length > 0) {
-      filtered = filtered.filter((job) =>
-        selectedRoles.includes(job.jobRole.toLowerCase())
-      );
-    }
-
-    if (selectedExperience.length > 0) {
-      filtered = filtered.filter((job) =>
-        selectedExperience.includes(job.minExp && job.minExp.toString())
-      );
-    }
-
-    if (selectedModeOfWork.length > 0) {
-      if (selectedModeOfWork[0].toLowerCase() === "remote") {
-        filtered = filtered.filter((job) =>
-          selectedModeOfWork.includes(job.location)
-        );
-      } else if (selectedModeOfWork[0].toLowerCase() === "hybrid") {
-        filtered = filtered.filter((job) =>
-          selectedModeOfWork.includes(job.location)
-        );
-      } else {
-        filtered = filtered.filter((job) => job.location !== null);
-      }
-    }
-
-    if (selectedBasePay.length > 0) {
-      const baseSalary = Number(selectedBasePay[0].replace("l", ""));
-      console.log(baseSalary, typeof baseSalary);
-
-      filtered = filtered.filter((job) => {
-        if (job.minJdSalary !== null && job.maxJdSalary !== null) {
-          return job.minJdSalary <= baseSalary && baseSalary <= job.maxJdSalary;
-        } else if (job.minJdSalary !== null) {
-          return job.minJdSalary <= baseSalary;
-        } else if (job.maxJdSalary !== null) {
-          return baseSalary <= job.maxJdSalary;
-        }
-        return false;
-      });
-    }
-
-    if (searchTerm.length > 0) {
-      filtered = filtered.filter(
-        (job: Job) =>
-          job?.companyName &&
-          job?.companyName.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    setFilteredJobs(filtered);
-  };
 
   useEffect(() => {
-    console.log(
-      selectedRoles,
-      selectedExperience,
-      selectedModeOfWork,
-      selectedBasePay,
-      searchTerm
+    setFilteredJobs(
+      filterJobs(
+        jobs,
+        selectedRoles,
+        selectedExperience,
+        selectedModeOfWork,
+        selectedBasePay,
+        searchTerm
+      )
     );
-    filterJobs();
   }, [
+    jobs,
     selectedRoles,
     selectedExperience,
     selectedModeOfWork,
     selectedBasePay,
-    jobs,
     searchTerm,
   ]);
+
   const handleScroll = () => {
     const isAtBottom =
       window.innerHeight + document.documentElement.scrollTop + 100 >=
@@ -107,9 +56,10 @@ function App() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLoading]);
+
   return (
     <div className="font-sans text-gray-700 m-6 mt-10">
-      <div className="flex gap-3 justify-center flex-wrap">
+      <div className="flex gap-3 justify-center flex-wrap items-center">
         <div className="filters">
           <DropdownSelect
             options={rolesOptions}
@@ -134,9 +84,18 @@ function App() {
         <div className="filters">
           <DropdownSelect
             options={basePayOptions}
-            placeholder="Minimum Salery"
+            placeholder="Minimum Salary"
             onSelect={setSelectedBasePay}
           />
+        </div>
+        <div className="filters">
+          <DropdownSelect
+            options={NoInputData}
+            placeholder="Number of Employees"
+          />
+        </div>
+        <div className="filters">
+          <DropdownSelect options={NoInputData} placeholder="Tech Stack" />
         </div>
         <div className="filters">
           <input
@@ -146,6 +105,14 @@ function App() {
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Company Name"
           />
+        </div>
+        <div className="filter">
+          <p
+            className="cursor-pointer text-secondary hover:opacity-80"
+            onClick={() => setFilteredJobs(jobs)}
+          >
+            clear filters
+          </p>
         </div>
       </div>
       {filteredJobs.length === 0 && !isLoading && (
