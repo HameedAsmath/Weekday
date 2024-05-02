@@ -1,15 +1,23 @@
 import { useEffect, useState, useRef } from "react";
 import DropdownIcon from "../icons/DropdownIcon";
 
-const DropdownSelect = ({ options }: { options: string[] }) => {
+const DropdownSelect = ({
+  options,
+  placeholder,
+  onSelect,
+}: {
+  options: string[];
+  placeholder: string;
+  onSelect: React.Dispatch<React.SetStateAction<string[]>>;
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedOption, setSelectedOption] = useState("");
+  //   const [selectedOption, setSelectedOption] = useState("");
   const [isDropDownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  useEffect(() => {
-    console.log(selectedOption);
-  }, [selectedOption]);
+  //   useEffect(() => {
+  //     console.log(selectedOption);
+  //   }, [selectedOption]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -29,7 +37,7 @@ const DropdownSelect = ({ options }: { options: string[] }) => {
   }, []);
 
   const handleOptionSelect = (option: string) => {
-    setSelectedOption(option);
+    onSelect([option.toLowerCase()]);
     setSearchTerm(option);
     setIsDropdownOpen(false);
   };
@@ -46,13 +54,13 @@ const DropdownSelect = ({ options }: { options: string[] }) => {
   return (
     <>
       <div
-        className="border-2 flex items-center rounded-md pr-2 w-40 relative"
+        className="border-2 flex items-center rounded-md pr-2 w-44 relative"
         onClick={() => setIsDropdownOpen(!isDropDownOpen)}
       >
         <input
           type="search"
           className="w-full py-2 px-4 outline-none border-0"
-          placeholder="Search..."
+          placeholder={placeholder}
           value={searchTerm}
           onChange={handleSearchChange}
         ></input>
@@ -63,7 +71,7 @@ const DropdownSelect = ({ options }: { options: string[] }) => {
       </div>
       {isDropDownOpen && (
         <div
-          className="dropdown-menu text-gray-700 pt-1 border-2 border-gray-200 rounded-md w-40 absolute bg-white z-10 mt-1"
+          className="dropdown-menu text-gray-700 pt-1 border-2 border-gray-200 rounded-md w-44 absolute bg-white z-10 mt-1"
           ref={dropdownRef}
         >
           {filteredOptions.length > 0 ? (
