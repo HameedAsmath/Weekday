@@ -20,11 +20,19 @@ function App() {
   const [selectedExperience, setSelectedExperience] = useState<string[]>([]);
   const [selectedModeOfWork, setSelectedModeOfWork] = useState<string[]>([]);
   const [selectedBasePay, setSelectedBasePay] = useState<string[]>([]);
+  const [role, setRole] = useState("");
+  const [experience, setExperience] = useState("");
+  const [mode, setMode] = useState("");
+  const [basePay, setBasePay] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs);
   const [isNoJobsFound, setIsNoJobsFound] = useState(false);
   const handleClearFilter = () => {
     setFilteredJobs(jobs);
+    setExperience("");
+    setRole("");
+    setBasePay("");
+    setMode("");
     setSearchTerm("");
     setSelectedBasePay([]);
     setSelectedExperience([]);
@@ -89,6 +97,8 @@ function App() {
             options={rolesOptions}
             placeholder="Roles"
             onSelect={setSelectedRoles}
+            searchTerm={role}
+            setSearchTerm={setRole}
           />
         </div>
         <div className="filters">
@@ -96,6 +106,8 @@ function App() {
             options={experienceOptions}
             placeholder="Experience"
             onSelect={setSelectedExperience}
+            searchTerm={experience}
+            setSearchTerm={setExperience}
           />
         </div>
         <div className="filters">
@@ -103,6 +115,8 @@ function App() {
             options={modeOfWorkOptions}
             placeholder="Inoffice"
             onSelect={setSelectedModeOfWork}
+            searchTerm={mode}
+            setSearchTerm={setMode}
           />
         </div>
         <div className="filters">
@@ -110,6 +124,8 @@ function App() {
             options={basePayOptions}
             placeholder="Minimum Salary"
             onSelect={setSelectedBasePay}
+            searchTerm={basePay}
+            setSearchTerm={setBasePay}
           />
         </div>
         <div className="filters">

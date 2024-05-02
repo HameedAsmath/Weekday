@@ -6,16 +6,18 @@ const DropdownSelect = ({
   options,
   placeholder,
   onSelect,
+  searchTerm,
+  setSearchTerm,
 }: {
   options: string[];
   placeholder: string;
   onSelect?: React.Dispatch<React.SetStateAction<string[]>>;
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [isDropDownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const debouncedSearchTerm = useDebounce(searchTerm, 300); 
-
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -34,7 +36,8 @@ const DropdownSelect = ({
   }, []);
 
   const handleOptionSelect = (option: string) => {
-    onSelect && onSelect([option.toLowerCase()]);
+    onSelect && onSelect([option?.toLowerCase()]);
+    setSearchTerm(option)
     setSearchTerm(option);
     setIsDropdownOpen(false);
   };
@@ -45,7 +48,7 @@ const DropdownSelect = ({
   };
 
   const filteredOptions = options.filter((option: string) =>
-    option.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+    option?.toLowerCase().includes(debouncedSearchTerm?.toLowerCase())
   );
 
   return (
