@@ -1,11 +1,8 @@
 import { Job } from "../types";
 import Thunder from "../assets/thunder.png";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 const JobCard = ({ job }: { job: Job }) => {
   const [isExpanded, setIsexpanded] = useState(false);
-  useEffect(() => {
-    console.log(isExpanded);
-  }, [isExpanded]);
   const getSaleryRange = () => {
     if (job.maxJdSalary && job.minJdSalary) {
       return `${job.minJdSalary}K - ${job.maxJdSalary}K ${job.salaryCurrencyCode}`;
