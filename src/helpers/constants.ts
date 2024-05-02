@@ -25,7 +25,7 @@ export const experienceOptions = [
 export const modeOfWorkOptions = ["Remote", "Hybrid", "Inoffice"];
 
 export const basePayOptions = [
-    "0L",
+    "3L",
     "10L",
     "20L",
     "30L",

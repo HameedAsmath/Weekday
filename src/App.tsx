@@ -17,6 +17,7 @@ function App() {
   const [selectedExperience, setSelectedExperience] = useState<string[]>([]);
   const [selectedModeOfWork, setSelectedModeOfWork] = useState<string[]>([]);
   const [selectedBasePay, setSelectedBasePay] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs);
   useEffect(() => setFilteredJobs(jobs), [jobs]);
 
@@ -31,34 +32,57 @@ function App() {
 
     if (selectedExperience.length > 0) {
       filtered = filtered.filter((job) =>
-        selectedExperience.includes(job.minExp.toString())
+        selectedExperience.includes(job.minExp && job.minExp.toString())
       );
     }
 
     if (selectedModeOfWork.length > 0) {
-      filtered = filtered.filter((job) =>
-        selectedModeOfWork.includes(job.location)
-      );
+      if (selectedModeOfWork[0].toLowerCase() === "remote") {
+        filtered = filtered.filter((job) =>
+          selectedModeOfWork.includes(job.location)
+        );
+      } else if (selectedModeOfWork[0].toLowerCase() === "hybrid") {
+        filtered = filtered.filter((job) =>
+          selectedModeOfWork.includes(job.location)
+        );
+      } else {
+        filtered = filtered.filter((job) => job.location !== null);
+      }
     }
 
     if (selectedBasePay.length > 0) {
-      filtered = filtered.filter((job) =>
-        selectedBasePay.includes(job.basePay)
+      const baseSalary = Number(selectedBasePay[0].replace("l", ""));
+      console.log(baseSalary, typeof baseSalary);
+
+      filtered = filtered.filter((job) => {
+        if (job.minJdSalary !== null && job.maxJdSalary !== null) {
+          return job.minJdSalary <= baseSalary && baseSalary <= job.maxJdSalary;
+        } else if (job.minJdSalary !== null) {
+          return job.minJdSalary <= baseSalary;
+        } else if (job.maxJdSalary !== null) {
+          return baseSalary <= job.maxJdSalary;
+        }
+        return false;
+      });
+    }
+
+    if (searchTerm.length > 0) {
+      filtered = filtered.filter(
+        (job: Job) =>
+          job?.companyName &&
+          job?.companyName.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     setFilteredJobs(filtered);
   };
 
   useEffect(() => {
-    console.warn(filteredJobs);
-  }, [filteredJobs]);
-
-  useEffect(() => {
     console.log(
       selectedRoles,
       selectedExperience,
       selectedModeOfWork,
-      selectedBasePay
+      selectedBasePay,
+      searchTerm
     );
     filterJobs();
   }, [
@@ -67,6 +91,7 @@ function App() {
     selectedModeOfWork,
     selectedBasePay,
     jobs,
+    searchTerm,
   ]);
   const handleScroll = () => {
     const isAtBottom =
@@ -113,8 +138,21 @@ function App() {
             onSelect={setSelectedBasePay}
           />
         </div>
+        <div className="filters">
+          <input
+            className="w-44 py-2 px-4 border-2 border-gray-200 outline-none rounded-lg"
+            type="search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Company Name"
+          />
+        </div>
       </div>
-      {filteredJobs.length === 0 && !isLoading && <h3>No results found</h3>}
+      {filteredJobs.length === 0 && !isLoading && (
+        <h3 className="text-center mt-[20%] font-mono text-gray-600 font-bold text-2xl">
+          Oops! No results found
+        </h3>
+      )}
       <div className="cards-container mt-8 flex gap-10 flex-wrap justify-center align-middle">
         {filteredJobs.map((job, index) => (
           <JobCard job={job} key={job.jdUid + index} />
