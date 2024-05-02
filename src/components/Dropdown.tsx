@@ -5,19 +5,19 @@ import { useDebounce } from "../custom-hooks/useDebounce";
 const DropdownSelect = ({
   options,
   placeholder,
-  onSelect,
   searchTerm,
   setSearchTerm,
+  Nodata
 }: {
   options: string[];
   placeholder: string;
-  onSelect?: React.Dispatch<React.SetStateAction<string[]>>;
-  searchTerm: string;
-  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  searchTerm?: string;
+  setSearchTerm?: React.Dispatch<React.SetStateAction<string>>;
+  Nodata?: boolean
 }) => {
   const [isDropDownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const debouncedSearchTerm = useDebounce(searchTerm||"", 300);
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -36,14 +36,12 @@ const DropdownSelect = ({
   }, []);
 
   const handleOptionSelect = (option: string) => {
-    onSelect && onSelect([option?.toLowerCase()]);
-    setSearchTerm(option)
-    setSearchTerm(option);
+    setSearchTerm && setSearchTerm(option);
     setIsDropdownOpen(false);
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+    setSearchTerm && setSearchTerm(event.target.value);
     setIsDropdownOpen(true);
   };
 
@@ -79,13 +77,13 @@ const DropdownSelect = ({
               <div className="top-10" key={option}>
                 <p
                   className={`rounded-t bg-white ${
-                    onSelect
+                    !Nodata
                       ? "hover:bg-blue-50"
-                      : "hover:bg-gray-50 cursor-not-allowed"
+                      : "bg-gray-100  cursor-not-allowed"
                   } py-2 px-4 whitespace-no-wrap w-full option ${
-                    onSelect && "cursor-pointer"
+                    !Nodata && "cursor-pointer"
                   }`}
-                  onClick={() => onSelect && handleOptionSelect(option)}
+                  onClick={() => !Nodata && handleOptionSelect(option)}
                 >
                   {option}
                 </p>

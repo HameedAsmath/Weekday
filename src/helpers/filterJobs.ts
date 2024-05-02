@@ -2,49 +2,36 @@ import { Job } from "../types";
 
 export const filterJobs = (
   jobs: Job[],
-  selectedRoles: string[],
-  selectedExperience: string[],
-  selectedModeOfWork: string[],
-  selectedBasePay: string[],
+  selectedRoles: string,
+  selectedExperience: string,
+  selectedModeOfWork: string,
+  selectedBasePay: string,
   searchTerm: string
 ): Job[] => {
   return jobs.filter((job) => {
     const roleMatch =
-      selectedRoles.length === 0 ||
-      selectedRoles.includes(job.jobRole.toLowerCase());
+      selectedRoles === "" || job.jobRole.toLowerCase() === selectedRoles.toLowerCase();
 
     const expMatch =
-      selectedExperience.length === 0 ||
-      selectedExperience.includes(job.minExp && job.minExp.toString());
+      selectedExperience === "" || job.minExp === Number(selectedExperience);
 
     const modeOfWorkMatch =
-      selectedModeOfWork.length === 0 ||
-      (selectedModeOfWork[0].toLowerCase() === "remote" ||
-      selectedModeOfWork[0].toLowerCase() === "hybrid"
-        ? selectedModeOfWork.includes(job.location)
+      selectedModeOfWork === "" ||
+      (selectedModeOfWork.toLowerCase() === "remote" ||
+        selectedModeOfWork.toLowerCase() === "hybrid"
+        ? job.location.toLowerCase() === selectedModeOfWork.toLowerCase()
         : job.location !== null);
 
     const basePayMatch =
-      selectedBasePay.length === 0 ||
-      selectedBasePay.every((base) => {
-        const baseSalary = Number(base.replace("l", ""));
-        return (
-          (job.minJdSalary === null || job.minJdSalary <= baseSalary) &&
-          (job.maxJdSalary === null || baseSalary <= job.maxJdSalary)
-        );
-      });
+      selectedBasePay === "" ||
+      ((job.minJdSalary === null || job.minJdSalary <= Number(selectedBasePay)) &&
+        (job.maxJdSalary === null || Number(selectedBasePay) <= job.maxJdSalary));
 
     const searchTermMatch =
       searchTerm === "" ||
       (job?.companyName &&
         job?.companyName.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    return (
-      roleMatch &&
-      expMatch &&
-      modeOfWorkMatch &&
-      basePayMatch &&
-      searchTermMatch
-    );
+    return roleMatch && expMatch && modeOfWorkMatch && basePayMatch && searchTermMatch;
   });
 };

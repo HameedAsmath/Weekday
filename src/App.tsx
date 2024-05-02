@@ -16,10 +16,6 @@ import useThrottle from "./custom-hooks/useThrottle";
 
 function App() {
   const { isLoading, jobs, error, fetchJobs } = useFetchJobs();
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
-  const [selectedExperience, setSelectedExperience] = useState<string[]>([]);
-  const [selectedModeOfWork, setSelectedModeOfWork] = useState<string[]>([]);
-  const [selectedBasePay, setSelectedBasePay] = useState<string[]>([]);
   const [role, setRole] = useState("");
   const [experience, setExperience] = useState("");
   const [mode, setMode] = useState("");
@@ -34,18 +30,14 @@ function App() {
     setBasePay("");
     setMode("");
     setSearchTerm("");
-    setSelectedBasePay([]);
-    setSelectedExperience([]);
-    setSelectedModeOfWork([]);
-    setSelectedRoles([]);
   };
   useEffect(() => {
     const filtered = filterJobs(
       jobs,
-      selectedRoles,
-      selectedExperience,
-      selectedModeOfWork,
-      selectedBasePay,
+      role,
+      experience,
+      mode,
+      basePay,
       searchTerm
     );
     if (filtered.length === 0 && !isLoading) {
@@ -58,20 +50,20 @@ function App() {
     setFilteredJobs(
       filterJobs(
         jobs,
-        selectedRoles,
-        selectedExperience,
-        selectedModeOfWork,
-        selectedBasePay,
+        role,
+        experience,
+        mode,
+        basePay,
         searchTerm
       )
     );
   }, [
     jobs,
-    selectedRoles,
-    selectedExperience,
-    selectedModeOfWork,
-    selectedBasePay,
-    searchTerm,
+    role,
+    experience,
+    mode,
+    basePay,
+    searchTerm
   ]);
   const handleScroll = () => {
     const isAtBottom =
@@ -96,7 +88,6 @@ function App() {
           <DropdownSelect
             options={rolesOptions}
             placeholder="Roles"
-            onSelect={setSelectedRoles}
             searchTerm={role}
             setSearchTerm={setRole}
           />
@@ -105,7 +96,6 @@ function App() {
           <DropdownSelect
             options={experienceOptions}
             placeholder="Experience"
-            onSelect={setSelectedExperience}
             searchTerm={experience}
             setSearchTerm={setExperience}
           />
@@ -114,7 +104,6 @@ function App() {
           <DropdownSelect
             options={modeOfWorkOptions}
             placeholder="Inoffice"
-            onSelect={setSelectedModeOfWork}
             searchTerm={mode}
             setSearchTerm={setMode}
           />
@@ -123,7 +112,6 @@ function App() {
           <DropdownSelect
             options={basePayOptions}
             placeholder="Minimum Salary"
-            onSelect={setSelectedBasePay}
             searchTerm={basePay}
             setSearchTerm={setBasePay}
           />
@@ -132,10 +120,11 @@ function App() {
           <DropdownSelect
             options={NoInputData}
             placeholder="Number of Employees"
+            Nodata
           />
         </div>
         <div className="filters">
-          <DropdownSelect options={NoInputData} placeholder="Tech Stack" />
+          <DropdownSelect options={NoInputData} placeholder="Tech Stack" Nodata/>
         </div>
         <div className="filters">
           <input
