@@ -37,7 +37,7 @@ function App() {
       role,
       experience,
       mode,
-      basePay,
+      [basePay],
       searchTerm
     );
     if (filtered.length === 0 && !isLoading) {
@@ -48,23 +48,9 @@ function App() {
       setIsNoJobsFound(false);
     }
     setFilteredJobs(
-      filterJobs(
-        jobs,
-        role,
-        experience,
-        mode,
-        basePay,
-        searchTerm
-      )
+      filterJobs(jobs, role, experience, mode, [basePay], searchTerm)
     );
-  }, [
-    jobs,
-    role,
-    experience,
-    mode,
-    basePay,
-    searchTerm
-  ]);
+  }, [jobs, role, experience, mode, basePay, searchTerm]);
   const handleScroll = () => {
     const isAtBottom =
       window.innerHeight + document.documentElement.scrollTop + 100 >=
@@ -124,7 +110,11 @@ function App() {
           />
         </div>
         <div className="filters">
-          <DropdownSelect options={NoInputData} placeholder="Tech Stack" Nodata/>
+          <DropdownSelect
+            options={NoInputData}
+            placeholder="Tech Stack"
+            Nodata
+          />
         </div>
         <div className="filters">
           <input
