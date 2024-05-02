@@ -5,19 +5,28 @@ import { useFetchJobs } from "./custom-hooks/useFetchJobs";
 import { Job } from "./types";
 import DropdownSelect from "./components/Dropdown";
 
+const rolesOptions = [
+  "Frontend",
+  "Backend",
+  "Fullstack",
+  "IOS",
+  "Android",
+  "Tech Lead",
+  "Web3",
+  "ML",
+];
 function App() {
   const { isLoading, jobs, error, fetchJobs } = useFetchJobs();
   const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs);
   useEffect(() => setFilteredJobs(jobs), [jobs]);
   const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop !==
-        document.documentElement.offsetHeight ||
-      isLoading
-    ) {
-      return;
+    const isAtBottom =
+      window.innerHeight + document.documentElement.scrollTop + 100 >=
+      document.documentElement.offsetHeight;
+
+    if (isAtBottom && !isLoading) {
+      fetchJobs(jobs.length);
     }
-    fetchJobs(jobs.length);
   };
 
   useEffect(() => {
@@ -26,11 +35,17 @@ function App() {
   }, [isLoading]);
   return (
     <div className="font-sans text-gray-700 m-6 mt-10">
-      <div className="filters">
-        <DropdownSelect options={["hello", "world", "test"]} />
+      <div className="flex gap-3 justify-center">
+        <div className="filters">
+          <DropdownSelect options={rolesOptions} />
+        </div>
+        <div className="filters">
+          <DropdownSelect options={["hello", "world", "test"]} />
+        </div>
       </div>
+      {filteredJobs.length === 0 && !isLoading && <h3>No results found</h3>}
       <div className="cards-container mt-8 flex gap-10 flex-wrap justify-center align-middle">
-        {filteredJobs.map((job, index) => (
+        {jobs.map((job, index) => (
           <JobCard job={job} key={job.jdUid + index} />
         ))}
       </div>
@@ -41,7 +56,7 @@ function App() {
           ))}
         </div>
       )}
-      {error && <p> "Something went wrong"</p>}
+      {error && <p> "Something went wrong" </p>}
     </div>
   );
 }

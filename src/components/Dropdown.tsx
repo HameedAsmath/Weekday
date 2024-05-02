@@ -63,7 +63,7 @@ const DropdownSelect = ({ options }: { options: string[] }) => {
       </div>
       {isDropDownOpen && (
         <div
-          className="dropdown-menu text-gray-700 pt-1 border-2 border-gray-200 rounded-md w-40 absolute bg-white mt-1"
+          className="dropdown-menu text-gray-700 pt-1 border-2 border-gray-200 rounded-md w-40 absolute bg-white z-10 mt-1"
           ref={dropdownRef}
         >
           {filteredOptions.length > 0 ? (
