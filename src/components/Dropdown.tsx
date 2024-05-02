@@ -13,7 +13,7 @@ const DropdownSelect = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropDownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const debouncedSearchTerm = useDebounce(searchTerm, 300); 
 
   useEffect(() => {
