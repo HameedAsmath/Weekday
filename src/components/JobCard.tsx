@@ -1,6 +1,11 @@
 import { Job } from "../types";
 import Thunder from "../assets/thunder.png";
+import { useEffect, useState } from "react";
 const JobCard = ({ job }: { job: Job }) => {
+  const [isExpanded, setIsexpanded] = useState(false);
+  useEffect(() => {
+    console.log(isExpanded);
+  }, [isExpanded]);
   const getSaleryRange = () => {
     if (job.maxJdSalary && job.minJdSalary) {
       return `${job.minJdSalary}K - ${job.maxJdSalary}K ${job.salaryCurrencyCode}`;
@@ -35,14 +40,21 @@ const JobCard = ({ job }: { job: Job }) => {
           Estimated Salery: <span>{getSaleryRange()}</span>
         </p>
         <p className="font-mono mt-3">Job Description:</p>
-        <div className="fade-text-gradient overflow-hidden">
+        <div
+          className={`${
+            isExpanded ? "h-auto" : "h-14 fade-text-gradient overflow-hidden"
+          } transition-height duration-300 ease-in-out`}
+        >
           <p className="text-gray-500">
             {job.jobDetailsFromCompany || "Not Mentioned"}
           </p>
         </div>
-        <p className=" text-secondary mx-auto font-extralight text-center -mt-4 absolute left-0 right-0 cursor-pointer">
-          show more
-        </p>
+        <button
+          className="text-secondary mx-auto font-extralight text-center -mt-4 absolute left-0 right-0 cursor-pointer"
+          onClick={() => setIsexpanded(!isExpanded)}
+        >
+          {isExpanded ? "Show less" : "Show more"}
+        </button>
         <p className="text-mono font-medium text-gray-500 mt-5">
           Minimum Experience
         </p>
