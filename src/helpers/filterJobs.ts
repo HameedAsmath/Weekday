@@ -10,7 +10,8 @@ export const filterJobs = (
 ): Job[] => {
   return jobs.filter((job) => {
     const roleMatch =
-      selectedRoles === "" || job.jobRole.toLowerCase() === selectedRoles.toLowerCase();
+      selectedRoles === "" ||
+      job.jobRole.toLowerCase() === selectedRoles.toLowerCase();
 
     const expMatch =
       selectedExperience === "" || job.minExp === Number(selectedExperience);
@@ -18,20 +19,27 @@ export const filterJobs = (
     const modeOfWorkMatch =
       selectedModeOfWork === "" ||
       (selectedModeOfWork.toLowerCase() === "remote" ||
-        selectedModeOfWork.toLowerCase() === "hybrid"
+      selectedModeOfWork.toLowerCase() === "hybrid"
         ? job.location.toLowerCase() === selectedModeOfWork.toLowerCase()
         : job.location !== null);
 
+    const basePay = Number(selectedBasePay.toLowerCase().replace("l", ""));
     const basePayMatch =
       selectedBasePay === "" ||
-      ((job.minJdSalary === null || job.minJdSalary <= Number(selectedBasePay)) &&
-        (job.maxJdSalary === null || Number(selectedBasePay) <= job.maxJdSalary));
+      ((job.minJdSalary === null || job.minJdSalary <= basePay) &&
+        (job.maxJdSalary === null || basePay <= job.maxJdSalary));
 
     const searchTermMatch =
       searchTerm === "" ||
       (job?.companyName &&
         job?.companyName.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    return roleMatch && expMatch && modeOfWorkMatch && basePayMatch && searchTermMatch;
+    return (
+      roleMatch &&
+      expMatch &&
+      modeOfWorkMatch &&
+      basePayMatch &&
+      searchTermMatch
+    );
   });
 };
